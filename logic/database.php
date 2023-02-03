@@ -25,9 +25,10 @@ function loadUser(string $email) : User
         ];
         $query->execute($parameters);
         $user = $query->fetch(PDO::FETCH_ASSOC);
-        $newUser = new User($user['first_name'], $user['last_name'], $user['email'], $user['password']));
+        $newUser = new User($user['email'], $user['password']);
         $newUser->setId($user['id']);
-
+        
+        return $newUser;
 }
 
 function saveUser(User $user) : User
@@ -42,6 +43,8 @@ function saveUser(User $user) : User
         ];
         
     $query->execute($parameters);
+    
+    return loadUser($user->getEmail());
 }
 
 
