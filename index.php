@@ -6,18 +6,7 @@ require './logic/router.php';
 require './logic/database.php';
 
 
-// Check de page dans l'url
 
-if(isset($_GET['route']))
-{
-    
-    checkRoute($_GET['route']);
-    
-}else{
-    
-    checkRoute('');
-    
-}
 
 // Création d'un nouvel utilisateur
 
@@ -32,9 +21,25 @@ if(isset($_POST['firstName']) && !empty($_POST['firstName'])
     
     if($_POST['password'] === $_POST['confirmPassword'])
     {
-        $hash_password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-        $newUser = new User($_POST['firstName'], $_POST['lastName'], $_POST['email'], $hash_password);
-        saveUser($newUser, $db);
+        
+        if(loadUser($_POST['email'], $db) === null)
+        {
+            
+            $hash_password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+            $newUser = new User($_POST['firstName'], $_POST['lastName'], $_POST['email'], $hash_password);
+            saveUser($newUser, $db);
+            
+            $_GET['route'] = 'homepage';
+            echo 'Votre compte a bien été créé.';
+            
+            
+        }else
+        {
+            
+            echo 'Cet email existe déjà !';
+            
+        }
+        
         
     }
     
@@ -84,8 +89,9 @@ if(isset($_POST['userEmail']) && !empty($_POST['userEmail'])
     {
         
         $_SESSION['session'] = true;
+        $_SESSION['firstname'] = loadUser($_POST['userEmail'], $db)->getFirst_name();
         
-        require './pages/account.php';
+        $_GET['route'] = 'mon-compte';
         
     }else
     {
@@ -95,8 +101,19 @@ if(isset($_POST['userEmail']) && !empty($_POST['userEmail'])
         
     }
     
+}
+
+// Check de page dans l'url
+
+if(isset($_GET['route']))
+{
+    
+    checkRoute($_GET['route']);
+    
 }else{
-    echo 'Ne rentre pas dans mes conditions de connexion';
+    
+    checkRoute('');
+    
 }
 
 
