@@ -8,11 +8,13 @@
     </head>
     <body>
         <?php
-        require './partials/_header.phtml';
+        require './templates/partials/_header.phtml';
         
-        require './templates/{$template}.phtml';
+        var_dump($template);
         
-        require './partials/_footer.phtml'; 
+        require $template.'/'.$template.'.phtml';
+        
+        require './templates/partials/_footer.phtml'; 
         ?>
     </body>
 </html>

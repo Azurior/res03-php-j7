@@ -2,8 +2,7 @@
 
 // Les require
 
-require './logic/rooter.php';
-require './templates/layout.phtml';
+require './logic/router.php';
 require './logic/database.php';
 
 
@@ -34,8 +33,8 @@ if(isset($_POST['firstName']) && !empty($_POST['firstName'])
     if($_POST['password'] === $_POST['confirmPassword'])
     {
         $hash_password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-        $newUSer = new User($_POST['firstName'], $_POST['lastName'], $_POST['email'], $hash_password);
-        saveUser($newUser);
+        $newUser = new User($_POST['firstName'], $_POST['lastName'], $_POST['email'], $hash_password);
+        saveUser($newUser, $db);
         
     }
     
@@ -70,15 +69,21 @@ if(isset($_POST['firstName']) && !empty($_POST['firstName'])
 }
 
 
+
+
 // Connexion avec un utilisateur
 
 
-if(isset($_POST['useremail']) && !empty($_POST['useremail']) && !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) 
-&& isset($_POST['userpassword']) && !empty($_POST['userpassword']))
+if(isset($_POST['userEmail']) && !empty($_POST['userEmail']) 
+&& filter_var($_POST['userEmail'], FILTER_VALIDATE_EMAIL)
+&& isset($_POST['userPassword']) && !empty($_POST['userPassword']))
 {
-    
-    if(password_verify($_POST['password'], loadUser($_POST['userpassword'])->getPassword()))
+    var_dump($_POST['userEmail']);
+    var_dump($_POST['userPassword']);
+    if(password_verify($_POST['userPassword'], loadUser($_POST['userEmail'], $db)->getPassword()) === true)
     {
+        
+        $_SESSION['session'] = true;
         
         require './pages/account.php';
         
@@ -86,9 +91,12 @@ if(isset($_POST['useremail']) && !empty($_POST['useremail']) && !filter_var($_PO
     {
         
         $error_message = "Vos identifiants ne sont pas correct !";
+        echo 'Pas de condition';
         
     }
     
+}else{
+    echo 'Ne rentre pas dans mes conditions de connexion';
 }
 
 

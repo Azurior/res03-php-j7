@@ -2,7 +2,7 @@
 
 $template = "register";
 
-require './templates/layout.phtml';
+require 'templates/layout.phtml';
 
 
 ?>
